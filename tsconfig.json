@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "lib": [
+      "ES2020",
+      "WebWorker",
+      "DOM"
+    ],
+    "types": [
+      "node",
+      "@cloudflare/workers-types",
+      "esbuild-style-plugin"
+    ],
+    "baseUrl": "./src",
+    "paths": {
+      "components/*": [
+        "client/components/*"
+      ],
+      "hooks/*": [
+        "client/hooks/*"
+      ],
+      "styles/*": [
+        "client/styles/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

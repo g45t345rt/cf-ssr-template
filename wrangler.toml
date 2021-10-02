@@ -1,0 +1,24 @@
+name = ""
+type = "javascript"
+workers_dev = true
+compatibility_date = "2021-09-24"
+zone_id = ""
+route = ""
+
+kv_namespaces = [
+  { binding = "TEST_NAMESPACE1", id = "" },
+  { binding = "TEST_NAMESPACE2", id = "" }
+]
+
+[site]
+bucket = "./public"
+entry-point = '.'
+
+[build]
+command = "npm run build:prod"
+
+[build.upload]
+format = "service-worker"
+
+[miniflare]
+kv_persist = true
