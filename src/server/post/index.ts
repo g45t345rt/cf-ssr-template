@@ -1,7 +1,7 @@
 import { Request } from 'itty-router'
 import { nanoid } from 'nanoid'
 
-type Post = {
+export interface Post {
   title: string
   content: string
   createAt: Date
@@ -21,7 +21,7 @@ export const delPost = async (request: Request) => {
   const { params } = request
   const { key } = params
 
-  const post = await POSTS.get(key)
+  const post = await POSTS.get(key, 'json')
   if (!post) return new Response(`The post does not exists.`, { status: 404 })
 
   await POSTS.delete(key)
@@ -32,11 +32,11 @@ export const getPost = async (request: Request) => {
   const { params } = request
   const { key } = params
 
-  const post = await POSTS.get(key)
+  const post = await POSTS.get(key, 'json')
   if (!post) return new Response(`The post does not exists.`, { status: 404 })
 
   const init = { headers: { 'Content-Type': 'application/json' } } as ResponseInit
-  return new Response(post, init)
+  return new Response(JSON.stringify(post), init)
 }
 
 export const getPosts = async (request: Request) => {

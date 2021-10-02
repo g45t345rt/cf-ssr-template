@@ -1,5 +1,6 @@
 GET http://localhost:5000/api/posts
 content-type: application/json
+cookie: testing=test;
 
 ###
 

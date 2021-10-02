@@ -1,4 +1,4 @@
-name = ""
+name = "cf-ssr-template-worker"
 type = "javascript"
 workers_dev = true
 compatibility_date = "2021-09-24"
@@ -7,8 +7,9 @@ route = ""
 
 kv_namespaces = [
   { binding = "POSTS", id = "" },
-  { binding = "POSTS_LATEST", id = "" },
-  { binding = "USERS", id = "" }
+  { binding = "USERS", id = "" },
+  { binding = "USERNAMES", id = ""},
+  { binding = "TOKENS", id = ""}
 ]
 
 [site]

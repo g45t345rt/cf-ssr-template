@@ -57,7 +57,7 @@ watcher.on('ready', async () => {
   const mf = new Miniflare({
     scriptPath: './dist/index.js',
     log: new ConsoleLog(true),
-    buildCommand: null
+    buildCommand: undefined
   })
 
   mf.createServer().listen(5000, '0.0.0.0', () => {

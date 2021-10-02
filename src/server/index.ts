@@ -10,18 +10,26 @@ import template from './template'
 import ServerApp from '../client/ssr'
 
 import { addPost, getPost, getPosts, delPost } from './post'
+import register from './auth/register'
+import login from './auth/login'
+import changePassword from './auth/changePassword'
+import changeUsername from './auth/changeUsername'
+import { withUser } from './auth/user'
 
 const router = Router()
 
 // API
 // POSTS
 router.get('/api/posts/:key', getPost)
-router.get('/api/posts', getPosts)
+router.get('/api/posts', withUser, getPosts)
 router.post('/api/posts', addPost)
 router.delete('/api/posts/:key', delPost)
 
 // AUTH / USERS
-// TODO
+router.post('/api/auth/register', register)
+router.post('/api/auth/login', login)
+router.post('/api/auth/changeUsername', changeUsername)
+router.post('/api/auth/changePassword', changePassword)
 
 // Handle static files
 router.get('/public/*', staticFiles('public'))
