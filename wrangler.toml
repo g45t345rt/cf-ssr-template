@@ -6,8 +6,9 @@ zone_id = ""
 route = ""
 
 kv_namespaces = [
-  { binding = "TEST_NAMESPACE1", id = "" },
-  { binding = "TEST_NAMESPACE2", id = "" }
+  { binding = "POSTS", id = "" },
+  { binding = "POSTS_LATEST", id = "" },
+  { binding = "USERS", id = "" }
 ]
 
 [site]

@@ -5,5 +5,6 @@ interface Window {
 }
 
 declare global {
-  const TEST_NAMESPACE1: KVNamespace
+  const POSTS: KVNamespace
+  const USERS: KVNamespace
 }

@@ -9,7 +9,19 @@ import staticFiles from './staticFiles'
 import template from './template'
 import ServerApp from '../client/ssr'
 
+import { addPost, getPost, getPosts, delPost } from './post'
+
 const router = Router()
+
+// API
+// POSTS
+router.get('/api/posts/:key', getPost)
+router.get('/api/posts', getPosts)
+router.post('/api/posts', addPost)
+router.delete('/api/posts/:key', delPost)
+
+// AUTH / USERS
+// TODO
 
 // Handle static files
 router.get('/public/*', staticFiles('public'))
