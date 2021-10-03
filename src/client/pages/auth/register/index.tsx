@@ -30,7 +30,7 @@ export default (): JSX.Element => {
   }, [])
 
   return <div>
-    <div>Register</div>
+    <h1>Register</h1>
     <form onSubmit={onSubmit}>
       <div>Username</div>
       <input name="username" type="text" />

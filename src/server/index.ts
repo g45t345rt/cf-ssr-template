@@ -9,7 +9,7 @@ import staticFiles from './staticFiles'
 import template from './template'
 import ServerApp from '../client/ssr'
 
-import { addPost, getPost, getPosts, delPost } from './post'
+import { addPost, getPost, getLatestPosts, delPost } from './post'
 import register from './auth/register'
 import login from './auth/login'
 import changePassword from './auth/changePassword'
@@ -21,15 +21,15 @@ const router = Router()
 // API
 // POSTS
 router.get('/api/posts/:key', getPost)
-router.get('/api/posts', withUser, getPosts)
+router.get('/api/posts-latest', getLatestPosts)
 router.post('/api/posts', addPost)
 router.delete('/api/posts/:key', delPost)
 
 // AUTH / USERS
 router.post('/api/auth/register', register)
 router.post('/api/auth/login', login)
-router.post('/api/auth/changeUsername', changeUsername)
-router.post('/api/auth/changePassword', changePassword)
+router.post('/api/auth/changeUsername', withUser, changeUsername)
+router.post('/api/auth/changePassword', withUser, changePassword)
 
 // Handle static files
 router.get('/public/*', staticFiles('public'))

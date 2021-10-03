@@ -13,4 +13,5 @@ declare global {
   const USERS: KVNamespace
   const TOKENS: KVNamespace
   const USERNAMES: KVNamespace
+  const POSTS_LATEST: KVNamespace
 }

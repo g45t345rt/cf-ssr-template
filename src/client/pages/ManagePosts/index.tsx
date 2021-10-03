@@ -39,7 +39,7 @@ const AddPost = (props): JSX.Element => {
     const add = async () => {
       await apiAddPost(newPost).catch(err => setAddError(err))
       setAddLoading(false)
-      setPosts([...posts, newPost])
+      setPosts([newPost, ...posts])
       clearAddInputs()
       buttonAdd.current.disabled = false
     }
@@ -101,21 +101,24 @@ const DelPost = (props): JSX.Element => {
 
 export default (): JSX.Element => {
   const postList = useServerData('post_list', async () => {
-    const _postList = await POSTS.list({ limit: 5 })
-    _postList.data = []
+    const latestPosts = await POSTS_LATEST.list({ limit: 5 })
+    latestPosts['data'] = []
 
-    for (let i = 0; i < _postList.keys.length; i++) {
-      const key = _postList.keys[i]
-      const post = await POSTS.get(key.name, 'json')
-      _postList.data.push({ key: key.name, ...post })
+    for (let i = 0; i < latestPosts.keys.length; i++) {
+      const key = latestPosts.keys[i]
+      const extractId = new RegExp(/@(.*)/) // key definition = {timestamp}@{postId}
+      const id = extractId.exec(key.name)[1]
+      const post = await POSTS.get(id, 'json')
+      latestPosts.data.push({ key: id, ...post })
     }
 
-    return _postList
+    return latestPosts
   }, { data: [] })
 
   const [posts, setPosts] = React.useState(postList.data)
 
   return <div>
+    <h1>Manage posts</h1>
     <AddPost posts={posts} setPosts={setPosts} />
     <DelPost posts={posts} setPosts={setPosts} />
     <div>Posts</div>

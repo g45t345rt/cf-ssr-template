@@ -25,7 +25,7 @@ export default (): JSX.Element => {
   }, [])
 
   return <div>
-    <div>Login</div>
+    <h1>Login</h1>
     <form onSubmit={onSubmit} method="post">
       <div>Username</div>
       <input name="username" type="text" />
