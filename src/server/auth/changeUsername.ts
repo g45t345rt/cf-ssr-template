@@ -1,5 +1,3 @@
-import { Request } from 'itty-router'
-
 interface ChangeUsernameData {
   newUsername: string
 }
@@ -11,7 +9,8 @@ const schema = {
 }
 
 export default async (request: Request) => {
-  const { username, id } = request.user
+  const { user } = request.auth
+  const { id, username } = user
   const formData = await request.json()
 
   //const isValid = ajv.validate(schema, formData)
@@ -24,6 +23,6 @@ export default async (request: Request) => {
 
   await USERNAMES.delete(username)
   await USERNAMES.put(newUsername, id)
-  await USERS.put(id, { ...request.user, username: newUsername })
+  await USERS.put(id, { ...user, username: newUsername })
   return new Response(`Username was changed!`)
 }

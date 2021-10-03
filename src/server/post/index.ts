@@ -1,6 +1,6 @@
-import { Request } from 'itty-router'
 import { nanoid } from 'nanoid'
 
+// using endUnix to reverse ordering with list() **hack
 const endUnix = 32503680000 // January 1, 3000 12:00:00 AM
 
 export interface Post {

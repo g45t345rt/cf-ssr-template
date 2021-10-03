@@ -1,7 +1,9 @@
-import { Request } from 'itty-router'
 import bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
 import ZSchema from 'z-schema'
+
+import { sanitizeUser } from './user'
+
 const validator = new ZSchema({})
 
 interface LoginData {
@@ -20,12 +22,13 @@ const schema = {
 
 
 export default async (request: Request) => {
+  const { auth } = request
+  if (auth) return new Response(auth.sanitizedUser)
+
   const formData = await request.json()
 
   const isValid = validator.validate(formData, schema)
   var error = validator.getLastError()
-  console.log(isValid, error)
-  //const isValid = ajv.com
   if (!isValid) return new Response(error, { status: 400 })
 
   const { username, password } = formData
@@ -43,9 +46,10 @@ export default async (request: Request) => {
 
   const init = {
     headers: {
-      'Set-Cookie': `token=${newToken}; Max-Age=${ttl} Secure;`
+      'Content-Type': 'application/json',
+      'Set-Cookie': `token=${newToken}; Max-Age=${ttl}; Path=/`
     }
   } as ResponseInit
 
-  return new Response(null, init)
+  return new Response(sanitizeUser(user), init)
 }

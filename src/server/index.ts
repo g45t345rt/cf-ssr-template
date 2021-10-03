@@ -14,7 +14,7 @@ import register from './auth/register'
 import login from './auth/login'
 import changePassword from './auth/changePassword'
 import changeUsername from './auth/changeUsername'
-import { withUser } from './auth/user'
+import { currentUser, logout, requiredUser, withUser } from './auth/user'
 
 const router = Router()
 
@@ -27,20 +27,21 @@ router.delete('/api/posts/:key', delPost)
 
 // AUTH / USERS
 router.post('/api/auth/register', register)
-router.post('/api/auth/login', login)
-router.post('/api/auth/changeUsername', withUser, changeUsername)
-router.post('/api/auth/changePassword', withUser, changePassword)
+router.post('/api/auth/login', withUser, login)
+router.post('/api/auth/changeUsername', withUser, requiredUser, changeUsername)
+router.post('/api/auth/changePassword', withUser, requiredUser, changePassword)
+router.post('/api/auth/logout', withUser, requiredUser, logout)
 
 // Handle static files
 router.get('/public/*', staticFiles('public'))
 
 // Match all routes
-router.all('*', async (req) => {
+router.all('*', withUser, async (req, event: FetchEvent) => {
   const resInit = { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } } as ResponseInit
   const serverDataContext = { data: {}, funcs: {} } as ServerDataContext
-  const serverContext = { req, res: resInit } as ServerContext
+  const serverContext = { req, res: resInit, event } as ServerContext
   const element = createElement(ServerApp, { serverContext, serverDataContext })
-  const body = await renderApp(element, serverDataContext)
+  const body = await renderApp(element, serverDataContext, serverContext)
   const helmet = Helmet.renderStatic() // call after react render!
   const { res } = serverContext
   const { data } = serverDataContext

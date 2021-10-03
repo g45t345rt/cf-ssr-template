@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
-import { Request } from 'itty-router'
 
 export type ServerContext = {
   req: Request
   res: ResponseInit
+  event: FetchEvent
 }
 
 const Context = React.createContext<ServerContext>(null)

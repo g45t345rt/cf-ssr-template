@@ -2,9 +2,11 @@ import React, { ReactElement, ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { ServerContext } from './useServer'
 
+export type ServerDataFunc = (serverContext: ServerContext) => Promise<unknown> | void
+
 export type ServerDataContext = {
   data: unknown
-  funcs: { [key: string]: () => unknown }
+  funcs: { [key: string]: ServerDataFunc }
 }
 
 const Context = React.createContext<ServerDataContext>({ data: {}, funcs: {} })
@@ -28,23 +30,22 @@ export const ServerDataProvider = ({ children, context }: ServerDataProviderProp
   </Context.Provider>
 }
 
-export type ServerData = (serverContext: ServerContext) => Promise<unknown> | void
 
-export const renderApp = async (element: ReactElement, context: ServerDataContext): Promise<string> => {
+export const renderApp = async (element: ReactElement, context: ServerDataContext, server: ServerContext): Promise<string> => {
   await Promise.all(Object.keys(context.funcs).map(async (key) => {
     const func = context.funcs[key]
-    context.data[key] = await func()
+    context.data[key] = await func(server)
   }))
 
   const preCount = Object.keys(context.funcs).length
   const body = renderToString(element)
   const postCount = Object.keys(context.funcs).length
-  if (postCount > preCount) return renderApp(element, context)
+  if (postCount > preCount) return renderApp(element, context, server)
   Reflect.deleteProperty(context, 'funcs')
   return body
 }
 
-export default function useServerData<T>(key: string, func: () => unknown, initialValue?: T): T {
+export default function useServerData<T>(key: string, func: ServerDataFunc, initialValue?: T): T {
   const context = React.useContext(Context)
   const { funcs } = context
   if (funcs && !funcs[key]) funcs[key] = func

@@ -1,4 +1,3 @@
-import { Request } from 'itty-router'
 import bcrypt from 'bcryptjs'
 
 interface ChangePasswordData {

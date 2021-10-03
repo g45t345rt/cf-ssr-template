@@ -19,7 +19,7 @@
 
 ## Examples
 
-The template comes with recurent logics that you might need.
+The template comes with reccurent logics that you might need.
 You can always delete the files if you don't need it
 
 - Auth (login, register, session user)

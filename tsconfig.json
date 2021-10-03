@@ -13,7 +13,8 @@
     "types": [
       "node",
       "@cloudflare/workers-types",
-      "esbuild-style-plugin"
+      "esbuild-style-plugin",
+      "itty-router"
     ],
     "baseUrl": "./src",
     "paths": {

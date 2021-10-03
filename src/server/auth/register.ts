@@ -1,4 +1,3 @@
-import { Request } from 'itty-router'
 import bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
 
