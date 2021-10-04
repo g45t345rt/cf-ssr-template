@@ -100,22 +100,11 @@ const DelPost = (props): JSX.Element => {
 }
 
 export default (): JSX.Element => {
-  const postList = useServerData('post_list', async () => {
-    const latestPosts = await POSTS_LATEST.list({ limit: 5 })
-    latestPosts['data'] = []
+  const data = useServerData('post_list', async () => {
+    return await POSTS_LATEST.list({ limit: 5 })
+  }, { keys: [] })
 
-    for (let i = 0; i < latestPosts.keys.length; i++) {
-      const key = latestPosts.keys[i]
-      const extractId = new RegExp(/@(.*)/) // key definition = {timestamp}@{postId}
-      const id = extractId.exec(key.name)[1]
-      const post = await POSTS.get(id, 'json')
-      latestPosts.data.push({ key: id, ...post })
-    }
-
-    return latestPosts
-  }, { data: [] })
-
-  const [posts, setPosts] = React.useState(postList.data)
+  const [posts, setPosts] = React.useState(data.keys)
 
   return <div>
     <h1>Manage posts</h1>

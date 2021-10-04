@@ -4,20 +4,24 @@ import { nanoid } from 'nanoid'
 const endUnix = 32503680000 // January 1, 3000 12:00:00 AM
 
 export interface Post {
+  key: string
   title: string
   content: string
-  createAt: Date
+  createdAt: Date
+  latestKey: string
 }
 
 export const addPost = async (request: Request) => {
   const formData = await request.json()
+  const { title, content } = formData
 
   const key = nanoid(10)
   const unix = new Date().getTime() / 1000
-  const latestKey = `${endUnix - unix}@${key}`
+  const latestKey = `${(endUnix - unix)}@${key}`
 
-  await POSTS.put(key, JSON.stringify({ ...formData, createdAt: unix, latestKey }))
-  await POSTS_LATEST.put(latestKey, key)
+  const post = { key, title, content, createdAt: unix, latestKey }
+  await POSTS.put(key, JSON.stringify(post))
+  await POSTS_LATEST.put(latestKey, JSON.stringify(post), { metadata: post })
   const init = { headers: { 'Content-Type': 'application/json' } } as ResponseInit
   return new Response(key, init)
 }
