@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs'
+import { withKV } from 'server/kvprefixes'
+import { withUser } from './user'
 
 interface ChangePasswordData {
   oldPassword: string
@@ -12,22 +14,27 @@ const schema = {
   }
 }
 
-export default async (request: Request) => {
-  const { user } = request
-  const formData = await request.json()
+export default [
+  withKV,
+  withUser(),
+  async (request: Request) => {
+    const { auth } = request
+    const { user } = auth
+    const formData = await request.json()
 
-  //const isValid = ajv.validate(schema, formData)
-  //if (!isValid) return new Response(ajv.errors, { status: 400 })
+    //const isValid = ajv.validate(schema, formData)
+    //if (!isValid) return new Response(ajv.errors, { status: 400 })
 
-  const { oldPassword, newPassword } = formData
+    const { oldPassword, newPassword } = formData
 
-  const validPassword = await bcrypt.compare(oldPassword, user.passwordHash)
-  if (!validPassword) return new Response(null, { status: 400 })
+    const validPassword = await bcrypt.compare(oldPassword, user.passwordHash)
+    if (!validPassword) return new Response(null, { status: 400 })
 
-  const salt = await bcrypt.genSalt(10)
-  const newPasswordHash = await bcrypt.hash(newPassword, salt)
-  user.passwordHash = newPasswordHash
-  await USERS.put(username, user)
+    const salt = await bcrypt.genSalt(10)
+    const newPasswordHash = await bcrypt.hash(newPassword, salt)
+    user.passwordHash = newPasswordHash
+    await request.kv.USERS.putData(auth.user.key, user)
 
-  return new Response(`Password changed!`)
-}
+    return new Response(`Password changed!`)
+  }
+]

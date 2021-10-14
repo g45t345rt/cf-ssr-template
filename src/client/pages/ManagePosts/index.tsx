@@ -1,18 +1,27 @@
 import React from 'react'
-import axios from 'axios'
+import { KVPrefix } from 'cf-kvprefix'
 
 import useServerData from 'hooks/useServerData'
 
+import posts from 'server/kvprefixes/posts'
+import useUser from 'hooks/useUser'
+import Unauthorized from '../Unauthorized'
+
 const apiAddPost = async (data) => {
-  return await axios.post('/api/posts', data, { headers: { 'Content-Type': 'application/json' } })
+  return await fetch('/api/posts', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
 }
 
 const apiDelPost = async (key) => {
-  return await axios.delete(`/api/posts/${key}`, { headers: { 'Content-Type': 'application/json' } })
+  return await fetch(`/api/posts/${key}`, {
+    method: 'DELETE'
+  })
 }
 
-const getPosts = async () => {
-  return await axios.get('/api/posts', { headers: { 'Content-Type': 'application/json' } })
+const getPosts = async (indexKey: string, host?: string) => {
+  return await fetch(`${host}/api/posts?indexKey=${indexKey}`)
 }
 
 const AddPost = (props): JSX.Element => {
@@ -100,11 +109,15 @@ const DelPost = (props): JSX.Element => {
 }
 
 export default (): JSX.Element => {
-  const data = useServerData('post_list', async () => {
-    return await POSTS_LATEST.list({ limit: 5 })
-  }, { keys: [] })
+  const [user] = useUser()
 
-  const [posts, setPosts] = React.useState(data.keys)
+  const list = useServerData('post_list', async (e) => {
+    return await e.req.kv.POSTS.listData({ indexKey: 'createdAt_desc' })
+  }, { data: [] })
+
+  const [posts, setPosts] = React.useState(list.data)
+
+  if (!user) return <Unauthorized />
 
   return <div>
     <h1>Manage posts</h1>

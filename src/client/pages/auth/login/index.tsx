@@ -1,10 +1,12 @@
-import axios from 'axios'
 import React from 'react'
 
 import useUser from 'hooks/useUser'
 
-const apiLogin = async (data) => {
-  return await axios.post('/api/auth/login', data)
+const apiLogin = async (data: Object) => {
+  return await fetch('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
 }
 
 export default (): JSX.Element => {
@@ -23,8 +25,12 @@ export default (): JSX.Element => {
     const login = async () => {
       try {
         const res = await apiLogin(values)
-        setUser(res.data)
+        const data = await res.json()
+        if (res.ok) setUser(data)
+        else setPostErr(data)
+
       } catch (err) {
+        console.log(err)
         setPostErr(err)
       }
 

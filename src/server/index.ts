@@ -9,34 +9,38 @@ import staticFiles from './staticFiles'
 import template from './template'
 import ServerApp from '../client/ssr'
 
-import { addPost, getPost, getLatestPosts, delPost } from './post'
+import { addPost, getPost, getPosts, delPost } from './post'
 import register from './auth/register'
 import login from './auth/login'
 import changePassword from './auth/changePassword'
 import changeUsername from './auth/changeUsername'
-import { currentUser, logout, requiredUser, withUser } from './auth/user'
+import { withUser } from './auth/user'
+import { withKV } from './kvprefixes'
+import currentUser from './auth/currentUser'
+import logout from './auth/logout'
 
 const router = Router()
 
 // API
 // POSTS
-router.get('/api/posts/:key', getPost)
-router.get('/api/posts-latest', getLatestPosts)
-router.post('/api/posts', addPost)
-router.delete('/api/posts/:key', delPost)
+router.get('/api/posts/:key', ...getPost)
+router.get('/api/posts', ...getPosts)
+router.post('/api/posts', ...addPost)
+router.delete('/api/posts/:key', ...delPost)
 
 // AUTH / USERS
-router.post('/api/auth/register', register)
-router.post('/api/auth/login', withUser, login)
-router.post('/api/auth/changeUsername', withUser, requiredUser, changeUsername)
-router.post('/api/auth/changePassword', withUser, requiredUser, changePassword)
-router.post('/api/auth/logout', withUser, requiredUser, logout)
+router.post('/api/auth/register', ...register)
+router.post('/api/auth/login', ...login)
+router.post('/api/auth/changeUsername', ...changeUsername)
+router.post('/api/auth/changePassword', ...changePassword)
+router.post('/api/auth/logout', ...logout)
+router.get('/api/auth/currentUser', ...currentUser)
 
 // Handle static files
 router.get('/public/*', staticFiles('public'))
 
 // Match all routes
-router.all('*', withUser, async (req, event: FetchEvent) => {
+router.all('*', withKV, withUser({ required: false }), async (req, event: FetchEvent) => {
   const resInit = { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } } as ResponseInit
   const serverDataContext = { data: {}, funcs: {} } as ServerDataContext
   const serverContext = { req, res: resInit, event } as ServerContext

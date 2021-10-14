@@ -1,57 +1,59 @@
 import { nanoid } from 'nanoid'
+import { withUser } from 'server/auth/user'
 
-// using endUnix to reverse ordering with list() **hack
-const endUnix = 32503680000 // January 1, 3000 12:00:00 AM
+import { ListOptionsRequest, withListOptions } from 'server/helpers/request'
+import { createdResponse, jsonCreatedResponse, jsonOkResponse, notFoundResponse, okResponse } from 'server/helpers/response'
+import { withKV } from 'server/kvprefixes'
+import { Post } from 'server/kvprefixes/posts'
 
-export interface Post {
-  key: string
-  title: string
-  content: string
-  createdAt: Date
-  latestKey: string
-}
+export const addPost = [
+  withKV,
+  withUser(),
+  async (request: Request) => {
+    const { auth } = request
+    const formData = await request.json()
+    const { title, content } = formData
 
-export const addPost = async (request: Request) => {
-  const formData = await request.json()
-  const { title, content } = formData
+    const key = nanoid(10)
+    const unix = new Date().getTime() / 1000
 
-  const key = nanoid(10)
-  const unix = new Date().getTime() / 1000
-  const latestKey = `${(endUnix - unix)}@${key}`
+    const post = { title, content, createdAt: unix, createdBy: auth.user.key } as Post
+    await request.kv.POSTS.putData(key, post)
+    return jsonCreatedResponse(key)
+  }
+]
 
-  const post = { key, title, content, createdAt: unix, latestKey }
-  await POSTS.put(key, JSON.stringify(post))
-  await POSTS_LATEST.put(latestKey, JSON.stringify(post), { metadata: post })
-  const init = { headers: { 'Content-Type': 'application/json' } } as ResponseInit
-  return new Response(key, init)
-}
+export const delPost = [
+  withKV,
+  withUser(),
+  async (request: Request) => {
+    const { params } = request
+    const { key } = params
 
-export const delPost = async (request: Request) => {
-  const { params } = request
-  const { key } = params
+    const deleted = await request.kv.POSTS.deleteData(key)
+    if (!deleted) return notFoundResponse()
+    return okResponse()
+  }
+]
 
-  const post = await POSTS.get(key, 'json')
-  if (!post) return new Response(`The post does not exists.`, { status: 404 })
+export const getPost = [
+  withKV,
+  async (request: Request) => {
+    const { params } = request
+    const { key } = params
 
-  await POSTS.delete(key)
-  await POSTS_LATEST.delete(post.latestKey)
-  return new Response(`Post deleted!`)
-}
+    const post = await request.kv.POSTS.getData(key)
+    if (!post) return notFoundResponse()
+    return jsonOkResponse(post)
+  }
+]
 
-export const getPost = async (request: Request) => {
-  const { params } = request
-  const { key } = params
-
-  const post = await POSTS.get(key, 'json')
-  if (!post) return new Response(`The post does not exists.`, { status: 404 })
-
-  const init = { headers: { 'Content-Type': 'application/json' } } as ResponseInit
-  return new Response(JSON.stringify(post), init)
-}
-
-export const getLatestPosts = async (request: Request) => {
-  const posts = await POSTS_LATEST.list()
-
-  const init = { headers: { 'Content-Type': 'application/json' } } as ResponseInit
-  return new Response(JSON.stringify(posts), init)
-}
+export const getPosts = [
+  withKV,
+  withListOptions,
+  async (request: ListOptionsRequest) => {
+    const { listOptions } = request
+    const result = await request.kv.POSTS.listData(listOptions)
+    return jsonOkResponse(result)
+  }
+]

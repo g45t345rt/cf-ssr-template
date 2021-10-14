@@ -6,11 +6,7 @@ zone_id = ""
 route = ""
 
 kv_namespaces = [
-  { binding = "POSTS", id = "" },
-  { binding = "USERS", id = "" },
-  { binding = "USERNAMES", id = ""},
-  { binding = "TOKENS", id = ""},
-  { binding = "POSTS_LATEST", id = ""}
+  { binding = "DATA", id = "" }
 ]
 
 [site]

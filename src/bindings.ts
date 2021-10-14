@@ -1,6 +1,13 @@
+import { KVPrefix } from 'cf-kvprefix'
+import ittyRouter from 'itty-router'
+import { Post } from 'server/kvprefixes/posts'
+import { User } from 'server/kvprefixes/users'
+
 export { }
 
 declare global {
+  interface Request extends ittyRouter.Request { }
+
   interface Window {
     initialData: []
   }
@@ -11,20 +18,14 @@ declare global {
     token: string
   }
 
-  interface User {
-    id: string
-    username: string
-    passwordHash: string
-    createdAt: number
-  }
-
   interface Request {
     auth: Auth
+    kv: {
+      POSTS: KVPrefix<Post>
+      USERS: KVPrefix<User>
+      TOKENS: KVPrefix<string>
+    }
   }
 
-  const POSTS: KVNamespace
-  const USERS: KVNamespace
-  const TOKENS: KVNamespace
-  const USERNAMES: KVNamespace
-  const POSTS_LATEST: KVNamespace
+  const DATA: KVNamespace
 }

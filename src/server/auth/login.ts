@@ -1,5 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
+import { badResponse, jsonOkResponse, notFoundResponse, okResponse } from 'server/helpers/response'
+import { withKV } from 'server/kvprefixes'
 import ZSchema from 'z-schema'
 
 import { sanitizeUser } from './user'
@@ -21,35 +23,30 @@ const schema = {
 }
 
 
-export default async (request: Request) => {
-  const { auth } = request
-  if (auth) return new Response(auth.sanitizedUser)
+export default [
+  withKV,
+  async (request: Request) => {
+    const { auth } = request
+    if (auth) return new Response(auth.sanitizedUser)
 
-  const formData = await request.json()
+    const formData = await request.json()
 
-  const isValid = validator.validate(formData, schema)
-  var error = validator.getLastError()
-  if (!isValid) return new Response(error, { status: 400 })
+    const isValid = validator.validate(formData, schema)
+    var error = validator.getLastError()
+    //if (!isValid) return new Response(error, { status: 400 })
 
-  const { username, password } = formData
-  console.log(formData)
-  const id = await USERNAMES.get(username)
-  if (!id) return new Response(`User does not exists.`, { status: 404 })
+    const { username, password } = formData
+    console.log(formData)
+    const user = await request.kv.USERS.getData(username, 'username')
+    if (!user) return notFoundResponse(new Error(`User does not exists.`))
 
-  const user = await USERS.get(id, 'json')
-  const validPassword = await bcrypt.compare(password, user.passwordHash)
-  if (!validPassword) return new Response(`Invalid password.`, { status: 400 })
+    const validPassword = await bcrypt.compare(password, user.passwordHash)
+    if (!validPassword) return badResponse(new Error(`Invalid password.`))
 
-  const newToken = nanoid()
-  const ttl = 60 * 60 * 4 // 4 hours
-  await TOKENS.put(`${newToken}`, id, { expirationTtl: ttl })
-
-  const init = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Set-Cookie': `token=${newToken}; Max-Age=${ttl}; Path=/`
-    }
-  } as ResponseInit
-
-  return new Response(sanitizeUser(user), init)
-}
+    const newToken = nanoid()
+    const ttl = 60 * 60 * 4 // 4 hours
+    await request.kv.TOKENS.putData(newToken, user.key, { expirationTtl: ttl })
+    
+    return okResponse(sanitizeUser(user), { 'Set-Cookie': `token=${newToken}; Max-Age=${ttl}; Path=/` })
+  }
+]

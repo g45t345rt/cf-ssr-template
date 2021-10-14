@@ -1,8 +1,10 @@
-import axios from 'axios'
 import React from 'react'
 
 const apiRegister = async (data) => {
-  return await axios.post('/api/auth/register', data)
+  return await fetch('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
 }
 
 export default (): JSX.Element => {
@@ -22,7 +24,14 @@ export default (): JSX.Element => {
 
     setLoading(true)
     const register = async () => {
-      await apiRegister(values).catch((err) => setPostErr(err))
+      try {
+        const res = await apiRegister(values)
+        const data = await res.json()
+        if (!res.ok) setPostErr(data)
+      } catch (err) {
+        setPostErr(err)
+      }
+
       setLoading(false)
     }
 

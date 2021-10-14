@@ -1,10 +1,12 @@
 import React from 'react'
 
 import useUser from 'hooks/useUser'
-import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const apiLogout = async () => {
-  await axios.post('/api/auth/logout')
+  return await fetch('/api/auth/logout', {
+    method: 'POST'
+  })
 }
 
 export default (): JSX.Element => {
@@ -15,8 +17,9 @@ export default (): JSX.Element => {
     setLoading(true)
     const logout = async () => {
       try {
-        await apiLogout()
-        setUser(null)
+        const res = await apiLogout()
+        if (res.ok) setUser(null)
+        else console.log(res)
       } catch (err) {
         console.log(err)
       }
@@ -31,6 +34,11 @@ export default (): JSX.Element => {
 
   return <div>
     <div>You are logged in as {user.username}</div>
+    <ul>
+      <li>
+        <Link to="/manage-posts">Manage posts</Link>
+      </li>
+    </ul>
     <button type="button" onClick={onLogout}>Logout</button>
     {loading && <div>Logging out...</div>}
   </div>

@@ -7,9 +7,6 @@ export default (): JSX.Element => {
       <Link to="/">Home</Link>
     </li>
     <li>
-      <Link to="/manage-posts">Manage posts</Link>
-    </li>
-    <li>
       <Link to="/login">Login</Link>
     </li>
     <li>
