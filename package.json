@@ -4,8 +4,8 @@
   "description": "Cloudflare ssr web template",
   "main": "./dist/index.js",
   "scripts": {
-    "dev": "ts-node dev.ts --refreshPort 45348",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node build.ts --watch --refreshPort 45348",
     "build:dev": "ts-node build.ts",
     "build:prod": "ts-node build.ts --env production",
     "deploy": "wrangler publish"
