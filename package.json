@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "cf-ssr-template",
   "version": "1.0.0",
   "description": "Cloudflare ssr web template",

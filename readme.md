@@ -1,14 +1,27 @@
 # Cloudflare SSR web template
 
+```console
+wrangler generate {your_project} https://github.com/g45t345rt/cf-ssr-template
+```
+
 ## Goodies
 
 - Fast build with esbuild cache and rebuild
 - Auto web browser refresh while developing
 - SSR ready + server hooks
-- Handle static files with `kv-asset-handler`
 - Supports all popular css preprocessors with `esbuild-style-plugin`
 - Server routing with `itty-router`
 - KV indexing with `cf-kvprefix`
+- Handle static files with `kv-asset-handler`
+
+## Current problem with `modules` worker
+
+wrangler does not export `__STATIC_CONTENT_MANIFEST` to `modules` worker. `kv-asset-handler` need this manifest to cache and serve static files :L
+
+<https://github.com/cloudflare/wrangler/issues/1938>
+<https://github.com/cloudflare/kv-asset-handler/pull/200>
+
+Right now I'm hard coding the manifest :(:(:(
 
 ## Development
 
@@ -16,12 +29,13 @@
 
 ## Push to Cloudflare worker
 
-`npm run publish`
+`npm run deploy`
 
-## Examples
+## Other features
 
-The template comes with reccurent logics that you might need.
-You can always delete the files if you don't need it
+Other features to showcase the template. A good example on how to manipulate data with KV and how to create an authentication system on a serverless infrastructure. Delete the files if you don't need it.
 
-- Auth (login, register, session user)
-- Post (add, remove, edit post)
+- Auth (login, register & session user)
+- Post (add, remove & edit post)
+
+The auth logic is using a DurableObject for locking in-memory usernames when registering. Avoid duplicate username.
