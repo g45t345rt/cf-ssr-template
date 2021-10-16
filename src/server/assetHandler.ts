@@ -1,17 +1,38 @@
 import { getAssetFromKV, mapRequestToAsset } from '@cloudflare/kv-asset-handler'
-
-const customKeyModifier = (prefix) => {
-  return (request) => {
-    let defaultModifiedRequest = mapRequestToAsset(request)
-
-    let url = new URL(defaultModifiedRequest.url)
-    url.pathname = url.pathname.replace(prefix, '')
-    return new Request(url.toString(), request)
-  }
-}
+import * as mime from 'mime'
 
 export default (prefix) => {
   return async (request: Request, env: EnvInterface, ctx) => {
+    let manifest = {}
+    if (env.__STATIC_CONTENT_MANIFEST) manifest = env.__STATIC_CONTENT_MANIFEST
+    else {
+      // hack
+      // https://github.com/cloudflare/kv-asset-handler/issues/174
+      manifest = {
+        'dist/index.js': 'dist/index.2543e3f7f6.js',
+        'dist/index.css': 'dist/index.a4afb937e9.css'
+      }
+    }
+
+    let url = new URL(request.url)
+    const pathKey = url.pathname.replace(prefix, '').replace(/^\/+/, '')
+
+    console.log(pathKey)
+    const key = manifest[pathKey] ? manifest[pathKey] : pathKey
+    console.log(key)
+    const value = await env.__STATIC_CONTENT.get(key)
+
+    let mimeType = mime.getType(key)
+    if (mimeType.startsWith('text') || mimeType === 'application/javascript') {
+      mimeType += '; charset=utf-8'
+    }
+
+    return new Response(value, {
+      headers: {
+        'Content-Type': mimeType
+      }
+    })
+
     // https://github.com/cloudflare/wrangler/pull/1973
     // https://github.com/cloudflare/kv-asset-handler/issues/174
     const test = await env.__STATIC_CONTENT.get('dist/index.a4afb937e9.css')

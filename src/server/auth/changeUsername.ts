@@ -15,7 +15,7 @@ const schema = {
 export default [
   withKV,
   withUser(),
-  async (request: Request) => {
+  async (request: Request, env: EnvInterface) => {
     const { user } = request.auth
     const formData = await request.json()
 
@@ -25,11 +25,11 @@ export default [
     const { newUsername } = formData
     if (user.username === newUsername) return badResponse(new Error(`Same username.`))
 
-    const exists = await request.kv.USERS.getData(newUsername, 'username')
+    const exists = await env.kv.USERS.getData(newUsername, 'username')
     if (!exists) return notFoundResponse(new Error(`Username already exists.`))
 
     user.username = newUsername
-    await request.kv.USERS.putData(user.key, user)
+    await env.kv.USERS.putData(user.key, user)
 
     return okResponse()
   }

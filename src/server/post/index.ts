@@ -9,7 +9,7 @@ import { Post } from 'server/kvprefixes/posts'
 export const addPost = [
   withKV,
   withUser(),
-  async (request: Request) => {
+  async (request: Request, env: EnvInterface) => {
     const { auth } = request
     const formData = await request.json()
     const { title, content } = formData
@@ -18,7 +18,7 @@ export const addPost = [
     const unix = new Date().getTime() / 1000
 
     const post = { title, content, createdAt: unix, createdBy: auth.user.key } as Post
-    await request.kv.POSTS.putData(key, post)
+    await env.kv.POSTS.putData(key, post)
     return jsonCreatedResponse(key)
   }
 ]
@@ -26,11 +26,11 @@ export const addPost = [
 export const delPost = [
   withKV,
   withUser(),
-  async (request: Request) => {
+  async (request: Request, env: EnvInterface) => {
     const { params } = request
     const { key } = params
 
-    const deleted = await request.kv.POSTS.deleteData(key)
+    const deleted = await env.kv.POSTS.deleteData(key)
     if (!deleted) return notFoundResponse()
     return okResponse()
   }
@@ -38,11 +38,11 @@ export const delPost = [
 
 export const getPost = [
   withKV,
-  async (request: Request) => {
+  async (request: Request, env: EnvInterface) => {
     const { params } = request
     const { key } = params
 
-    const post = await request.kv.POSTS.getData(key)
+    const post = await env.kv.POSTS.getData(key)
     if (!post) return notFoundResponse()
     return jsonOkResponse(post)
   }
@@ -51,9 +51,9 @@ export const getPost = [
 export const getPosts = [
   withKV,
   withListOptions,
-  async (request: ListOptionsRequest) => {
+  async (request: ListOptionsRequest, env: EnvInterface) => {
     const { listOptions } = request
-    const result = await request.kv.POSTS.listData(listOptions)
+    const result = await env.kv.POSTS.listData(listOptions)
     return jsonOkResponse(result)
   }
 ]

@@ -2,12 +2,13 @@
 
 ## Goodies
 
-- Fast esbuild rebuild
-- Auto web browser refresh onSave
+- Fast build with esbuild cache and rebuild
+- Auto web browser refresh while developing
 - SSR ready + server hooks
 - Handle static files with `kv-asset-handler`
-- Supports all popular preprocessors with `esbuild-style-plugin`
+- Supports all popular css preprocessors with `esbuild-style-plugin`
 - Server routing with `itty-router`
+- KV indexing with `cf-kvprefix`
 
 ## Development
 

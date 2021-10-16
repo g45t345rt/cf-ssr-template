@@ -4,10 +4,10 @@ import { getCookieAuthToken, getUserFromAuthToken, sanitizeUser } from "./user"
 
 export default [
   withKV,
-  async (request: Request, event: FetchEvent) => {
-    const authToken = await getCookieAuthToken(event)
+  async (request: Request, env: EnvInterface) => {
+    const authToken = await getCookieAuthToken(request)
     if (!authToken) return badResponse(new Error(`Missing user "token" in cookie.`))
-    const user = await getUserFromAuthToken(request, authToken)
+    const user = await getUserFromAuthToken(env, authToken)
     if (!user) return badResponse(new Error(`Invalid token.`))
 
     return okResponse(sanitizeUser(user))

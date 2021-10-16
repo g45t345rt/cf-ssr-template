@@ -11,7 +11,7 @@ declare global {
   interface Window {
     initialData: []
   }
-  
+
   interface Auth {
     sanitizedUser: string
     user: User
@@ -20,12 +20,17 @@ declare global {
 
   interface Request {
     auth: Auth
+  }
+
+  interface EnvInterface {
+    DATA: KVNamespace
+    __STATIC_CONTENT: KVNamespace
+    __STATIC_CONTENT_MANIFEST: {}
+    VALUE_LOCK: DurableObjectNamespace
     kv: {
       POSTS: KVPrefix<Post>
       USERS: KVPrefix<User>
       TOKENS: KVPrefix<string>
     }
   }
-
-  const DATA: KVNamespace
 }

@@ -17,7 +17,7 @@ const schema = {
 export default [
   withKV,
   withUser(),
-  async (request: Request) => {
+  async (request: Request, env: EnvInterface) => {
     const { auth } = request
     const { user } = auth
     const formData = await request.json()
@@ -33,7 +33,7 @@ export default [
     const salt = await bcrypt.genSalt(10)
     const newPasswordHash = await bcrypt.hash(newPassword, salt)
     user.passwordHash = newPasswordHash
-    await request.kv.USERS.putData(auth.user.key, user)
+    await env.kv.USERS.putData(auth.user.key, user)
 
     return new Response(`Password changed!`)
   }

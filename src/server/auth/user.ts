@@ -2,18 +2,18 @@ import cookie from 'cookie'
 import { unauthorizedResponse } from 'server/helpers/response'
 import { User } from 'server/kvprefixes/users'
 
-export const getCookieAuthToken = (event: FetchEvent): string => {
-  const cookieHeader = event.request.headers.get('cookie')
+export const getCookieAuthToken = (request: Request): string => {
+  const cookieHeader = request.headers.get('cookie')
   if (!cookieHeader) return null
   const cookies = cookie.parse(cookieHeader)
   return cookies['token']
 }
 
-export const getUserFromAuthToken = async (request: Request, authToken: string): Promise<User> => {
-  const key = await request.kv.TOKENS.getData(authToken)
+export const getUserFromAuthToken = async (env: EnvInterface, authToken: string): Promise<User> => {
+  const key = await env.kv.TOKENS.getData(authToken)
   if (!key) return null
 
-  const user = await request.kv.USERS.getData(key)
+  const user = await env.kv.USERS.getData(key)
   return user
 }
 
@@ -23,10 +23,10 @@ export const sanitizeUser = (user: User): string => {
   return JSON.stringify(sanitizedUser, null, 2)
 }
 
-export const withUser = ({ required = true } = {}) => async (request: Request, event: FetchEvent) => {
-  const authToken = await getCookieAuthToken(event)
+export const withUser = ({ required = true } = {}) => async (request: Request, env: EnvInterface) => {
+  const authToken = await getCookieAuthToken(request)
   if (authToken) {
-    const user = await getUserFromAuthToken(request, authToken)
+    const user = await getUserFromAuthToken(env, authToken)
     if (user) {
       const sanitizedUser = sanitizeUser(user)
       request.auth = {

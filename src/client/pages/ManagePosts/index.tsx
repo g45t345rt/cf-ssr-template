@@ -111,8 +111,8 @@ const DelPost = (props): JSX.Element => {
 export default (): JSX.Element => {
   const [user] = useUser()
 
-  const list = useServerData('post_list', async (e) => {
-    return await e.req.kv.POSTS.listData({ indexKey: 'createdAt_desc' })
+  const list = useServerData('post_list', async ({ env }) => {
+    return await env.kv.POSTS.listData({ indexKey: 'createdAt_desc' })
   }, { data: [] })
 
   const [posts, setPosts] = React.useState(list.data)

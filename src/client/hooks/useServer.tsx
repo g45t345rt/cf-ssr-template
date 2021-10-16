@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 export type ServerContext = {
   req: Request
   res: ResponseInit
-  event: FetchEvent
+  env: EnvInterface
 }
 
 const Context = React.createContext<ServerContext>(null)

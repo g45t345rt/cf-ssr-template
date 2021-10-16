@@ -18,6 +18,7 @@ import { withUser } from './auth/user'
 import { withKV } from './kvprefixes'
 import currentUser from './auth/currentUser'
 import logout from './auth/logout'
+import assetHandler from './assetHandler'
 
 const router = Router()
 
@@ -36,14 +37,26 @@ router.post('/api/auth/changePassword', ...changePassword)
 router.post('/api/auth/logout', ...logout)
 router.get('/api/auth/currentUser', ...currentUser)
 
+router.get('/api/usernames/:action', async (request: Request, env: EnvInterface) => {
+  let id = env.VALUE_LOCK.idFromName('usernames')
+  let obj = env.VALUE_LOCK.get(id)
+  let resp = await obj.fetch(request.url, {
+    method: 'PUT',
+    body: JSON.stringify({ action: request.params.action })
+  })
+
+  let result = await resp.text()
+  return new Response(result)
+})
+
 // Handle static files
-router.get('/public/*', staticFiles('public'))
+router.get('/public/*', assetHandler('public'))
 
 // Match all routes
-router.all('*', withKV, withUser({ required: false }), async (req, event: FetchEvent) => {
+router.all('*', withKV, withUser({ required: false }), async (req: Request, env: EnvInterface) => {
   const resInit = { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } } as ResponseInit
   const serverDataContext = { data: {}, funcs: {} } as ServerDataContext
-  const serverContext = { req, res: resInit, event } as ServerContext
+  const serverContext = { req, res: resInit, env } as ServerContext
   const element = createElement(ServerApp, { serverContext, serverDataContext })
   const body = await renderApp(element, serverDataContext, serverContext)
   const helmet = Helmet.renderStatic() // call after react render!
@@ -58,7 +71,12 @@ const errorHandler = error => {
   return new Response(error.message || 'Server Error', { status: error.status || 500 })
 }
 
-addEventListener("fetch", (event) => {
-  const routeHandler = router.handle(event.request, event)
-  event.respondWith(routeHandler)
-})
+// Export DurableObject here
+export { ValueLock } from '../valueLock'
+
+// Listen to fetch()
+export default {
+  fetch(request: Request, env: EnvInterface, ctx) {
+    return router.handle(request, env, ctx)
+  }
+}

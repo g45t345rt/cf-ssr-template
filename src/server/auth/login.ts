@@ -25,7 +25,7 @@ const schema = {
 
 export default [
   withKV,
-  async (request: Request) => {
+  async (request: Request, env: EnvInterface) => {
     const { auth } = request
     if (auth) return new Response(auth.sanitizedUser)
 
@@ -37,7 +37,7 @@ export default [
 
     const { username, password } = formData
     console.log(formData)
-    const user = await request.kv.USERS.getData(username, 'username')
+    const user = await env.kv.USERS.getData(username, 'username')
     if (!user) return notFoundResponse(new Error(`User does not exists.`))
 
     const validPassword = await bcrypt.compare(password, user.passwordHash)
@@ -45,7 +45,7 @@ export default [
 
     const newToken = nanoid()
     const ttl = 60 * 60 * 4 // 4 hours
-    await request.kv.TOKENS.putData(newToken, user.key, { expirationTtl: ttl })
+    await env.kv.TOKENS.putData(newToken, user.key, { expirationTtl: ttl })
     
     return okResponse(sanitizeUser(user), { 'Set-Cookie': `token=${newToken}; Max-Age=${ttl}; Path=/` })
   }

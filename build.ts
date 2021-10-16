@@ -34,6 +34,10 @@ const buildServer = esbuild.build({
   ...config({ extractStyle: false, env }),
   define: { global: 'true' },
   incremental: watch,
+  format: 'esm',
+  outExtension: {
+    '.js': '.mjs'
+  },
   outdir: './dist',
   entryPoints: ['./src/server/index.ts']
 })
@@ -53,35 +57,35 @@ if (watch) {
   watcher.on('ready', async () => {
     const [clientResult, serverResult] = await build()
     console.log('Initial build complete')
-  
+
     const mf = new Miniflare({
-      scriptPath: './dist/index.js',
+      scriptPath: './dist/index.mjs',
       log: new ConsoleLog(true),
       buildCommand: undefined
     })
-  
+
     mf.createServer().listen(5000, '0.0.0.0', () => {
       console.log('Listening on :5000')
     })
-  
+
     let watchTimeoutId
     watcher.on('change', () => {
       if (watchTimeoutId) clearTimeout(watchTimeoutId)
-  
+
       const reload = async () => {
         try {
           console.log('Reloading...')
-  
+
           await Promise.all([clientResult.rebuild(), serverResult.rebuild()])
           await mf.reloadOptions()
           bundleEmitter.emit('reload')
-  
+
           console.log('Reload complete')
         } catch (err) {
           console.log(err)
         }
       }
-  
+
       // Make sure there is not a bunch of edit at the same time
       watchTimeoutId = setTimeout(reload, 500)
     })

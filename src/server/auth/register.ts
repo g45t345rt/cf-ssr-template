@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid'
 import { badResponse, createdResponse, notFoundResponse, okResponse } from 'server/helpers/response'
 import { withKV } from 'server/kvprefixes'
 import { User } from 'server/kvprefixes/users'
+import { useValueLock } from 'valueLock'
 
 interface RegisterData {
   username: string
@@ -18,15 +19,22 @@ const schema = {
 
 export default [
   withKV,
-  async (request: Request) => {
+  async (request: Request, env: EnvInterface) => {
     const formData = await request.json()
 
     //const isValid = ajv.validate(schema, formData)
     //if (!isValid) return new Response(ajv.errors, { status: 400 })
 
     const { username, password } = formData
-    const exists = await request.kv.USERS.getData(username, 'username')
+    let exists = await env.kv.USERS.getData(username, 'username')
     if (exists) return badResponse(new Error(`Username already exists.`))
+
+    const valueLock = useValueLock(env, 'usernames')
+    const isUsernameLock = await valueLock.exists(username)
+    if (isUsernameLock) return badResponse(new Error(`Username locked.`))
+
+    // lock username in case someone register at the sametime with the same username
+    await valueLock.lock(username)
 
     const key = nanoid()
     const salt = await bcrypt.genSalt(10)
@@ -34,7 +42,7 @@ export default [
 
     const unix = new Date().getTime() / 1000
     const user = { key, username, passwordHash, createdAt: unix } as User
-    await request.kv.USERS.putData(key, user)
+    await env.kv.USERS.putData(key, user)
 
     return createdResponse()
   }

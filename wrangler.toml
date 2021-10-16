@@ -1,13 +1,21 @@
 name = "cf-ssr-template-worker"
 type = "javascript"
 workers_dev = true
+usage_model = "unbound"
 compatibility_date = "2021-09-24"
 zone_id = ""
 route = ""
 
 kv_namespaces = [
-  { binding = "DATA", id = "" }
+  { binding = "DATA", id = "d15caab43bee4dfd88c12701059a333e" },
 ]
+
+[durable_objects]
+bindings = [{name = "VALUE_LOCK", class_name = "ValueLock"}]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["ValueLock"]
 
 [site]
 bucket = "./public"
@@ -17,7 +25,9 @@ entry-point = '.'
 command = "npm run build:prod"
 
 [build.upload]
-format = "service-worker"
+format = "modules"
+dir = "dist"
+main = "./index.mjs"
 
 [miniflare]
 kv_persist = true
