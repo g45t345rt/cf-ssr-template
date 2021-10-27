@@ -26,7 +26,7 @@ export default [
     if (user.username === newUsername) return badResponse(new Error(`Same username.`))
 
     const exists = await env.kv.USERS.getData(newUsername, 'username')
-    if (!exists) return notFoundResponse(new Error(`Username already exists.`))
+    if (exists) return badResponse(new Error(`Username already exists.`))
 
     user.username = newUsername
     await env.kv.USERS.putData(user.key, user)

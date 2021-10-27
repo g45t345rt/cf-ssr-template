@@ -38,6 +38,9 @@ export default (): JSX.Element => {
       <li>
         <Link to="/manage-posts">Manage posts</Link>
       </li>
+      <li>
+        <Link to="/change-username">Change username</Link>
+      </li>
     </ul>
     <button type="button" onClick={onLogout}>Logout</button>
     {loading && <div>Logging out...</div>}

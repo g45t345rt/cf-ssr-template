@@ -28,7 +28,7 @@ export const jsonCreatedResponse = (data, headers?) => {
 }
 
 export const okResponse = (data?, headers?) => {
-  return new Response(data, { status: 200, statusText: 'OK', headers })
+  return new Response(data || '{}', { status: 200, statusText: 'OK', headers })
 }
 
 export const createdResponse = (data?, headers?) => {

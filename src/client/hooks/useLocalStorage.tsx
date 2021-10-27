@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
+export default function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void, () => void] {
   const [storedValue, setStoredValue] = React.useState(() => {
     try {
-      if (window.localStorage) {
+      if (typeof window !== 'undefined' && window.localStorage) {
         const data = window.localStorage.getItem(key)
         return data ? JSON.parse(data) : initialValue
       }
@@ -17,7 +17,7 @@ export default function useLocalStorage<T>(key: string, initialValue: T): [T, (v
 
   const setValue = (value: T) => {
     try {
-      if (window.localStorage) {
+      if (typeof window !== 'undefined' && window.localStorage) {
         const valueToStore = value instanceof Function ? value(storedValue) : value
         setStoredValue(valueToStore)
 
@@ -29,5 +29,15 @@ export default function useLocalStorage<T>(key: string, initialValue: T): [T, (v
     }
   }
 
-  return [storedValue, setValue]
+  const delKey = () => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem(key)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  return [storedValue, setValue, delKey]
 }

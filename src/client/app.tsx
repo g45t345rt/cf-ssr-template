@@ -9,6 +9,7 @@ import ManagePosts from './pages/ManagePosts'
 import NotFound from './pages/NotFound'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
+import ChangeUsername from './pages/ChangeUsername'
 
 import Menu from './components/Menu'
 import { UserProvider } from 'hooks/useUser'
@@ -27,6 +28,7 @@ export default (): JSX.Element => {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/manage-posts" exact component={ManagePosts} />
+        <Route path="/change-username" exact component={ChangeUsername} />
         <Route path="/register" exact component={Register} />
         <Route path="/login" exact component={Login} />
         <Route path="*" component={NotFound} />

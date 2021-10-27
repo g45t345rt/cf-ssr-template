@@ -30,7 +30,6 @@ export const ServerDataProvider = ({ children, context }: ServerDataProviderProp
   </Context.Provider>
 }
 
-
 export const renderApp = async (element: ReactElement, context: ServerDataContext, server: ServerContext): Promise<string> => {
   await Promise.all(Object.keys(context.funcs).map(async (key) => {
     const func = context.funcs[key]

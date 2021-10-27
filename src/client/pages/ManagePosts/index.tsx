@@ -1,11 +1,14 @@
 import React from 'react'
 import { KVPrefix } from 'cf-kvprefix'
 
-import useServerData from 'hooks/useServerData'
+import useServerData, { isServerDataLoaded } from 'hooks/useServerData'
 
 import posts from 'server/kvprefixes/posts'
 import useUser from 'hooks/useUser'
 import Unauthorized from '../Unauthorized'
+import useServer from 'hooks/useServer'
+import useLocalStorage from 'hooks/useLocalStorage'
+import useMemState from 'hooks/useMemState'
 
 const apiAddPost = async (data) => {
   return await fetch('/api/posts', {
@@ -20,8 +23,8 @@ const apiDelPost = async (key) => {
   })
 }
 
-const getPosts = async (indexKey: string, host?: string) => {
-  return await fetch(`${host}/api/posts?indexKey=${indexKey}`)
+const getPosts = async (indexKey: string) => {
+  return await fetch(`/api/posts?indexKey=${indexKey}`)
 }
 
 const AddPost = (props): JSX.Element => {
@@ -110,12 +113,28 @@ const DelPost = (props): JSX.Element => {
 
 export default (): JSX.Element => {
   const [user] = useUser()
-
   const list = useServerData('post_list', async ({ env }) => {
     return await env.kv.POSTS.listData({ indexKey: 'createdAt_desc' })
   }, { data: [] })
 
-  const [posts, setPosts] = React.useState(list.data)
+  const [indexKey, setIndexKey] = React.useState('createdAt_desc')
+  const [loading, setLoading] = React.useState(false)
+
+  const [posts, setPosts] = useMemState('posts', list.data)
+
+  // Client side post request
+  React.useEffect(() => {
+    setLoading(true);
+
+    (async () => {
+      const res = await getPosts(indexKey)
+      if (res.ok) {
+        const list = await res.json()
+        setPosts(list.data)
+      }
+      setLoading(false)
+    })()
+  }, [indexKey])
 
   if (!user) return <Unauthorized />
 
