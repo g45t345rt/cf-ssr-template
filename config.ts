@@ -1,7 +1,7 @@
 import { BuildOptions } from 'esbuild'
 import autoprefixer from 'autoprefixer'
 import stylePlugin from 'esbuild-style-plugin'
-import presetEnv from 'postcss-preset-env'
+// import presetEnv from 'postcss-preset-env'
 
 type ConfigOptions = {
   extractStyle: boolean,
@@ -21,6 +21,7 @@ export default (options: ConfigOptions): BuildOptions => {
     sourcemap: !isProduction ? 'inline' : false,
     logLevel: 'error',
     minify: isProduction,
+    external: ['__STATIC_CONTENT_MANIFEST'],
     loader: {
       '.png': 'file',
       '.jpg': 'file'

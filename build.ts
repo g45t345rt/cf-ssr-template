@@ -61,7 +61,8 @@ if (watch) {
     const mf = new Miniflare({
       scriptPath: './dist/index.mjs',
       log: new ConsoleLog(true),
-      buildCommand: undefined
+      buildCommand: undefined,
+      disableCache: true // disable cf cache for assetHandler
     })
 
     mf.createServer().listen(5000, '0.0.0.0', () => {

@@ -25,7 +25,7 @@ declare global {
   interface EnvInterface {
     DATA: KVNamespace
     __STATIC_CONTENT: KVNamespace
-    __STATIC_CONTENT_MANIFEST: {}
+    __STATIC_CONTENT_MANIFEST: string
     VALUE_LOCK: DurableObjectNamespace
     kv: {
       POSTS: KVPrefix<Post>

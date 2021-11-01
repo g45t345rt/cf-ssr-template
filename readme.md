@@ -12,16 +12,18 @@ wrangler generate {your_project} https://github.com/g45t345rt/cf-ssr-template
 - Supports all popular css preprocessors with `esbuild-style-plugin`
 - Server routing with `itty-router`
 - KV indexing with `cf-kvprefix`
-- Handle static files with `kv-asset-handler`
+- Handle static files with Cache API
 
-## Current problem with `modules` worker
+## Current problem with `modules worker`
 
-wrangler does not export `__STATIC_CONTENT_MANIFEST` to `modules` worker. `kv-asset-handler` need this manifest to cache and serve static files :L
+Wrangler does not export `__STATIC_CONTENT_MANIFEST` to `modules` worker.
+We need the manifest to server static files
 
-<https://github.com/cloudflare/wrangler/issues/1938>
-<https://github.com/cloudflare/kv-asset-handler/pull/200>
+<https://github.com/cloudflare/wrangler/issues/1938>  
+<https://github.com/cloudflare/kv-asset-handler/pull/200>  
 
-Right now I'm hard coding the manifest :(:(:(
+Right now I have a custom wrangler build version that includes the `__STATIC_CONTENT_MANIFEST` in vars
+<https://github.com/cloudflare/wrangler/pull/2114>
 
 ## Development
 

@@ -18,7 +18,6 @@ import { withUser } from './auth/user'
 import { withKV } from './kvprefixes'
 import currentUser from './auth/currentUser'
 import logout from './auth/logout'
-import assetHandler from './assetHandler'
 
 const router = Router()
 
@@ -50,7 +49,7 @@ router.get('/api/usernames/:action', async (request: Request, env: EnvInterface)
 })
 
 // Handle static files
-router.get('/public/*', assetHandler('public'))
+router.get('/public/*', staticFiles('public'))
 
 // Match all routes
 router.all('*', withKV, withUser({ required: false }), async (req: Request, env: EnvInterface) => {

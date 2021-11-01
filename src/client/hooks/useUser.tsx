@@ -8,7 +8,6 @@ export const UserProvider = (props): JSX.Element => {
 
   const _user = useServerData('user', async (server) => {
     const { auth } = server.req
-    console.log(auth)
     if (auth) return JSON.parse(auth.sanitizedUser)
   }, null)
 

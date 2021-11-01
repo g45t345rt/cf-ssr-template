@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { getServerDataClientContext, ServerDataProvider } from 'hooks/useServerData'
 
 import App from './app'
+import './styles/index.sass'
 
 const serverFuncContext = getServerDataClientContext()
 const rootElement = document.getElementById('root')
