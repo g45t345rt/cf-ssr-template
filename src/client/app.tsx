@@ -1,6 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-import { Switch, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 
 import 'normalize.css'
 
@@ -25,14 +25,14 @@ export default (): JSX.Element => {
       </Helmet>
       <Menu />
       <LoggedIn />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/manage-posts" exact component={ManagePosts} />
-        <Route path="/change-username" exact component={ChangeUsername} />
-        <Route path="/register" exact component={Register} />
-        <Route path="/login" exact component={Login} />
-        <Route path="*" component={NotFound} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/manage-posts" element={<ManagePosts />} />
+        <Route path="/change-username" element={<ChangeUsername />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </UserProvider>
   </>
 }

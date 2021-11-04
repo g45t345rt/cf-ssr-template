@@ -1,11 +1,12 @@
 import * as esbuild from 'esbuild'
 import http from 'http'
-import config from './config'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import EventEmitter from 'events'
 import { ConsoleLog, Miniflare } from 'miniflare'
 import chokidar from 'chokidar'
+
+import config from './config'
 
 const argv = yargs(hideBin(process.argv)).argv
 const env = argv['env'] || 'development'

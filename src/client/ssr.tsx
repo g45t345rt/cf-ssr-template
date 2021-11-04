@@ -1,5 +1,5 @@
 import React from 'react'
-import { StaticRouter } from 'react-router-dom'
+import { StaticRouter } from 'react-router-dom/server'
 
 import { ServerContext, ServerProvider } from 'hooks/useServer'
 import { ServerDataContext, ServerDataProvider } from 'hooks/useServerData'
