@@ -4,15 +4,16 @@ import { Routes, Route } from 'react-router-dom'
 
 import 'normalize.css'
 
-import Home from './pages/Home'
-import ManagePosts from './pages/ManagePosts'
-import NotFound from './pages/NotFound'
-import Register from './pages/auth/Register'
-import Login from './pages/auth/Login'
-import ChangeUsername from './pages/ChangeUsername'
+import Home from 'pages/Home'
+import ManagePosts from 'pages/post/ManagePosts'
+import NotFound from 'pages/errors/NotFound'
+import Register from 'pages/auth/Register'
+import Login from 'pages/auth/Login'
+import ChangeUsername from 'pages/auth/ChangeUsername'
 
-import Menu from './components/Menu'
 import { UserProvider } from 'hooks/useUser'
+
+import Menu from 'components/Menu'
 import LoggedIn from 'components/LoggedIn'
 
 export default (): JSX.Element => {

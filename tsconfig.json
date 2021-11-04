@@ -24,6 +24,9 @@
       "hooks/*": [
         "client/hooks/*"
       ],
+      "pages/*": [
+        "client/pages/*"
+      ],
       "styles/*": [
         "client/styles/*"
       ]

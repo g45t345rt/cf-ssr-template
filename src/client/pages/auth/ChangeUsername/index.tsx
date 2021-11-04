@@ -1,6 +1,6 @@
 import useUser from 'hooks/useUser'
 import React from 'react'
-import Unauthorized from '../Unauthorized'
+import Unauthorized from 'pages/errors/Unauthorized'
 
 const postChangeUsername = (newUsername: string) => {
   return fetch('/api/auth/changeUsername', {

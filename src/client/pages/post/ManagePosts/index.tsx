@@ -2,7 +2,7 @@ import React from 'react'
 
 import useServerData from 'hooks/useServerData'
 import useUser from 'hooks/useUser'
-import Unauthorized from '../Unauthorized'
+import Unauthorized from 'pages/errors/Unauthorized'
 import useGlobalState from 'hooks/useGlobalState'
 
 const apiAddPost = async (data) => {

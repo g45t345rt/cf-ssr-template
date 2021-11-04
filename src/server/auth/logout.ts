@@ -1,5 +1,5 @@
 import { okResponse } from "server/helpers/response"
-import { withKV } from "server/kvprefixes"
+import { withKV } from "server/prefixes"
 import { withUser } from "./user"
 
 export default [

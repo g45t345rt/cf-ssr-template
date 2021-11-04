@@ -1,6 +1,6 @@
 import cookie from 'cookie'
 import { unauthorizedResponse } from 'server/helpers/response'
-import { User } from 'server/kvprefixes/users'
+import { User } from 'server/auth/prefix'
 
 export const getCookieAuthToken = (request: Request): string => {
   const cookieHeader = request.headers.get('cookie')

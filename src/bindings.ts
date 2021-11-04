@@ -1,7 +1,7 @@
 import { KVPrefix } from 'cf-kvprefix'
 import ittyRouter from 'itty-router'
-import { Post } from 'server/kvprefixes/posts'
-import { User } from 'server/kvprefixes/users'
+import { Post } from 'server/post/prefix'
+import { User } from 'server/auth/prefix'
 
 export { }
 

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
 import { badResponse, jsonOkResponse, notFoundResponse, okResponse } from 'server/helpers/response'
-import { withKV } from 'server/kvprefixes'
+import { withKV } from 'server/prefixes'
 import ZSchema from 'z-schema'
 
 import { sanitizeUser } from './user'

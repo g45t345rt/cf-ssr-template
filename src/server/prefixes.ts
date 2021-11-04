@@ -1,6 +1,6 @@
 import { KVPrefix, Prefix } from 'cf-kvprefix'
-import posts from './posts'
-import users from './users'
+import posts from './post/prefix'
+import users from './auth/prefix'
 
 export const withKV = async (request: Request, env: EnvInterface, ctx) => {
   const tokens = new Prefix<string>('tokens')

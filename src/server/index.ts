@@ -15,7 +15,7 @@ import login from './auth/login'
 import changePassword from './auth/changePassword'
 import changeUsername from './auth/changeUsername'
 import { withUser } from './auth/user'
-import { withKV } from './kvprefixes'
+import { withKV } from './prefixes'
 import currentUser from './auth/currentUser'
 import logout from './auth/logout'
 
@@ -36,6 +36,7 @@ router.post('/api/auth/changePassword', ...changePassword)
 router.post('/api/auth/logout', ...logout)
 router.get('/api/auth/currentUser', ...currentUser)
 
+// Test DurableObject - VALUE_LOCK
 router.get('/api/usernames/:action', async (request: Request, env: EnvInterface) => {
   let id = env.VALUE_LOCK.idFromName('usernames')
   let obj = env.VALUE_LOCK.get(id)

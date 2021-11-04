@@ -1,5 +1,5 @@
-import { badResponse, notFoundResponse, okResponse } from "server/helpers/response"
-import { withKV } from "server/kvprefixes"
+import { badResponse, okResponse } from "server/helpers/response"
+import { withKV } from "server/prefixes"
 import { withUser } from "./user"
 
 interface ChangeUsernameData {

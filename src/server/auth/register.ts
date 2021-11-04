@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
-import { badResponse, createdResponse, notFoundResponse, okResponse } from 'server/helpers/response'
-import { withKV } from 'server/kvprefixes'
-import { User } from 'server/kvprefixes/users'
+import { badResponse, createdResponse } from 'server/helpers/response'
+import { withKV } from 'server/prefixes'
+import { User } from 'server/auth/prefix'
 import { useValueLock } from 'valueLock'
 
 interface RegisterData {

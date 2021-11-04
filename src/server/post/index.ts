@@ -2,9 +2,9 @@ import { nanoid } from 'nanoid'
 import { withUser } from 'server/auth/user'
 
 import { ListOptionsRequest, withListOptions } from 'server/helpers/request'
-import { createdResponse, jsonCreatedResponse, jsonOkResponse, notFoundResponse, okResponse } from 'server/helpers/response'
-import { withKV } from 'server/kvprefixes'
-import { Post } from 'server/kvprefixes/posts'
+import { jsonCreatedResponse, jsonOkResponse, notFoundResponse, okResponse } from 'server/helpers/response'
+import { withKV } from 'server/prefixes'
+import { Post } from 'server/post/prefix'
 
 export const addPost = [
   withKV,

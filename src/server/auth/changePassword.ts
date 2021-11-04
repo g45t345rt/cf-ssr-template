@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import { withKV } from 'server/kvprefixes'
+import { withKV } from 'server/prefixes'
 import { withUser } from './user'
 
 interface ChangePasswordData {

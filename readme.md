@@ -6,13 +6,14 @@ wrangler generate {your_project} https://github.com/g45t345rt/cf-ssr-template
 
 ## Goodies
 
-- Fast build with esbuild cache and rebuild
+- Latest of `React` with useful hooks
+- Fast rebuild with `esbuild` caching
 - Auto web browser refresh while developing
-- SSR ready + server hooks
-- Supports all popular css preprocessors with `esbuild-style-plugin`
+- Server side rendering ready - SSR
+- Supports all popular css preprocessors (sass, stylus, less) with `esbuild-style-plugin`
 - Server routing with `itty-router`
 - KV indexing with `cf-kvprefix`
-- Handle static files with Cache API
+- Custom static files handler with Cache API (instead of kv-asset-handler that does seem to work on modules worker)
 
 ## Current problem with `modules worker`
 
@@ -33,11 +34,12 @@ Right now I have a custom wrangler build that includes the `__STATIC_CONTENT_MAN
 
 `npm run deploy`
 
-## Other features
+## Comes with default features
 
-Other features to showcase the template. A good example on how to manipulate data with KV and how to create an authentication system on a serverless infrastructure. Delete the files if you don't need it.
+- Auth (login, register & session user) - authentication system on a serverless infrastructure
+- Post (add, remove & edit post) - Simple data entry
 
-- Auth (login, register & session user)
-- Post (add, remove & edit post)
+You can always remove the features by deleting the appropriate folders.  
 
-The auth logic is using a DurableObject for locking in-memory usernames when registering. Avoid duplicate username.
+The auth logic is using a DurableObject for in-memory locking of usernames when registering.  
+Avoid simultaneous registration with the same username!
