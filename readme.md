@@ -17,12 +17,12 @@ wrangler generate {your_project} https://github.com/g45t345rt/cf-ssr-template
 ## Current problem with `modules worker`
 
 Wrangler does not export `__STATIC_CONTENT_MANIFEST` to `modules` worker.
-We need the manifest to server static files
+We need the manifest to serve static files
 
 <https://github.com/cloudflare/wrangler/issues/1938>  
 <https://github.com/cloudflare/kv-asset-handler/pull/200>  
 
-Right now I have a custom wrangler build version that includes the `__STATIC_CONTENT_MANIFEST` in vars
+Right now I have a custom wrangler build that includes the `__STATIC_CONTENT_MANIFEST` in vars
 <https://github.com/cloudflare/wrangler/pull/2114>
 
 ## Development

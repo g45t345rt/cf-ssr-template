@@ -2,7 +2,7 @@ import React from 'react'
 
 const globalState = {}
 
-export default function useMemState<T>(key: string, initialState: T): [T, (value: T) => void] {
+export default function useGlobalState<T>(key: string, initialState: T): [T, (value: T) => void] {
   const [state, _setState] = React.useState(() => {
     if (globalState[key]) {
       return globalState[key]

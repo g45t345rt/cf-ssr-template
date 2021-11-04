@@ -1,14 +1,9 @@
 import React from 'react'
-import { KVPrefix } from 'cf-kvprefix'
 
-import useServerData, { isServerDataLoaded } from 'hooks/useServerData'
-
-import posts from 'server/kvprefixes/posts'
+import useServerData from 'hooks/useServerData'
 import useUser from 'hooks/useUser'
 import Unauthorized from '../Unauthorized'
-import useServer from 'hooks/useServer'
-import useLocalStorage from 'hooks/useLocalStorage'
-import useMemState from 'hooks/useMemState'
+import useGlobalState from 'hooks/useGlobalState'
 
 const apiAddPost = async (data) => {
   return await fetch('/api/posts', {
@@ -120,7 +115,7 @@ export default (): JSX.Element => {
   const [indexKey, setIndexKey] = React.useState('createdAt_desc')
   const [loading, setLoading] = React.useState(false)
 
-  const [posts, setPosts] = useMemState('posts', list.data)
+  const [posts, setPosts] = useGlobalState('posts', list.data)
 
   // Client side post request
   React.useEffect(() => {
@@ -148,5 +143,6 @@ export default (): JSX.Element => {
         return <div key={index}>{JSON.stringify(post)}</div>
       })}
     </div>
+    {loading && <div>loading...</div>}
   </div>
 }
