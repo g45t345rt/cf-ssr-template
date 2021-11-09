@@ -61,6 +61,7 @@ if (watch) {
 
     const mf = new Miniflare({
       scriptPath: './dist/index.mjs',
+      modulesRules: [{ type: 'Text', include: ['__STATIC_CONTENT_MANIFEST'] }],
       log: new ConsoleLog(true),
       buildCommand: undefined,
       disableCache: true // disable cf cache for assetHandler

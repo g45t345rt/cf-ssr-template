@@ -1,4 +1,5 @@
 node_modules
-dist
+dist/*
+!dist/__STATIC_CONTENT_MANIFEST
 public/dist
 .mf

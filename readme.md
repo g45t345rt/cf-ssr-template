@@ -23,8 +23,13 @@ We need the manifest to serve static files
 <https://github.com/cloudflare/wrangler/issues/1938>  
 <https://github.com/cloudflare/kv-asset-handler/pull/200>  
 
-Right now I have a custom wrangler build that includes the `__STATIC_CONTENT_MANIFEST` in vars
-<https://github.com/cloudflare/wrangler/pull/2114>
+~~Right now I have a custom wrangler build that includes the `__STATIC_CONTENT_MANIFEST` in vars
+<https://github.com/cloudflare/wrangler/pull/2114>`~~
+
+The upcoming wrangler release will import the manifest
+`import manifest from '__STATIC_CONTENT_MANIFEST'`
+
+<https://github.com/cloudflare/wrangler/pull/2126>
 
 ## Development
 

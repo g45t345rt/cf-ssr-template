@@ -1,18 +1,12 @@
 import * as mime from 'mime'
+import staticContentManifest from '__STATIC_CONTENT_MANIFEST'
 
 export default (prefix) => {
   return async (request: Request, env: EnvInterface, ctx) => {
     const cache = caches.default
     const edgeTtl = 2 * 60 * 60 * 24 // 2 days
 
-    let manifest = {}
-
-    if (typeof env.__STATIC_CONTENT_MANIFEST === 'string') {
-      // You need this https://github.com/cloudflare/wrangler/pull/2114
-      // __STATIC_CONTENT_MANIFEST must be pass in environment variables
-      manifest = JSON.parse(env.__STATIC_CONTENT_MANIFEST)
-    }
-
+    let manifest = JSON.parse(staticContentManifest)
     let url = new URL(request.url)
     const pathKey = url.pathname.replace(prefix, '').replace(/^\/+/, '')
     const key = manifest[pathKey] ? manifest[pathKey] : pathKey
